@@ -1,48 +1,46 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ApplicationState } from '../../store';
-import { Repository } from '../../store/ducks/repositories/types';
 import { bindActionCreators, Dispatch } from 'redux';
+
+import { Repository } from '../../store/ducks/repositories/types';
+import { ApplicationState } from '../../store';
+
 import * as RepositoriesActions from '../../store/ducks/repositories/actions';
 
-/* Mapeia os tipos de informações que vem do mapStateToProps*/
+import RepositoryItem from '../RepositoryItem';
+
 interface StateProps {
-    repositories: Repository[];
+  repositories: Repository[]
 }
 
-/* Mapeia as funções */
 interface DispatchProps {
-    loadRequest(): void
+  loadRequest(): void
 }
 
-/** Mapeia propriedades que vem dos componentes pai */
-interface OwnProps {
-
-}
-
-type Props = StateProps & DispatchProps & OwnProps;
+type Props = StateProps & DispatchProps
 
 class RepositoryList extends Component<Props> {
-    /** Chamado imediatamente após a montagem de um componente. Definir o estado aqui 
-     * irá desencadear uma nova renderização. */
-    componentDidMount() {
-        const { loadRequest } = this.props;
+  componentDidMount() {
+    const { loadRequest } = this.props;
 
-        loadRequest();
-    }
+    loadRequest();
+  }
 
-    render() {
-        const { repositories } = this.props;
-        return (
-            <ul>
-                {repositories.map(repository => repository.name)}
-            </ul>
-        )
-    }
+  render() {
+    const { repositories } = this.props;
+
+    return (
+      <ul>
+        {repositories.map(repository => (
+          <RepositoryItem key={repository.id} repository={repository} />
+        ))}
+      </ul>
+    );
+  }
 }
 
 const mapStateToProps = (state: ApplicationState) => ({
-    repositories: state.repositories.data,
+  repositories: state.repositories.data,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators(RepositoriesActions, dispatch);
